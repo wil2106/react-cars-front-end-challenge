@@ -36913,7 +36913,7 @@ var _a;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.selectNoResults = exports.selectIsLoading = exports.selectCars = exports.fetchCars = exports.setNoResults = exports.setIsLoading = exports.setCars = exports.catalogSlice = void 0;
+exports.selectDurationFilter = exports.selectDistancefilter = exports.selectNoResults = exports.selectIsLoading = exports.selectCars = exports.fetchCars = exports.setDurationFilter = exports.setDistanceFilter = exports.setNoResults = exports.setIsLoading = exports.setCars = exports.catalogSlice = void 0;
 
 var toolkit_1 = require("@reduxjs/toolkit");
 
@@ -36922,7 +36922,9 @@ var axios_1 = __importDefault(require("axios"));
 var initialState = {
   cars: [],
   isLoading: false,
-  noResults: false
+  noResults: false,
+  durationFilter: '',
+  distanceFilter: ''
 };
 exports.catalogSlice = toolkit_1.createSlice({
   name: 'catalog',
@@ -36936,10 +36938,16 @@ exports.catalogSlice = toolkit_1.createSlice({
     },
     setNoResults: function setNoResults(state, action) {
       state.noResults = action.payload;
+    },
+    setDistanceFilter: function setDistanceFilter(state, action) {
+      state.distanceFilter = action.payload;
+    },
+    setDurationFilter: function setDurationFilter(state, action) {
+      state.durationFilter = action.payload;
     }
   }
 });
-exports.setCars = (_a = exports.catalogSlice.actions, _a.setCars), exports.setIsLoading = _a.setIsLoading, exports.setNoResults = _a.setNoResults; //thunks
+exports.setCars = (_a = exports.catalogSlice.actions, _a.setCars), exports.setIsLoading = _a.setIsLoading, exports.setNoResults = _a.setNoResults, exports.setDistanceFilter = _a.setDistanceFilter, exports.setDurationFilter = _a.setDurationFilter; //thunks
 
 /**
 * Fetches cars from backend with optional query parameters.
@@ -36949,15 +36957,17 @@ exports.setCars = (_a = exports.catalogSlice.actions, _a.setCars), exports.setIs
 * @returns An array of cars
 */
 
-exports.fetchCars = function (distance, duration) {
-  return function (dispatch) {
+exports.fetchCars = function () {
+  return function (dispatch, getState) {
     return __awaiter(void 0, void 0, void 0, function () {
-      var resp, cars_1, err_1;
+      var distance, duration, resp, cars_1, err_1;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
-            _a.trys.push([0, 2,, 3]); //clear cars
+            _a.trys.push([0, 2,, 3]);
 
+            distance = Number(getState().catalog.distanceFilter);
+            duration = Number(getState().catalog.durationFilter); //clear cars
 
             dispatch(exports.setCars([]));
             dispatch(exports.setIsLoading(true));
@@ -37012,6 +37022,14 @@ exports.selectIsLoading = function (state) {
 
 exports.selectNoResults = function (state) {
   return state.catalog.noResults;
+};
+
+exports.selectDistancefilter = function (state) {
+  return state.catalog.distanceFilter;
+};
+
+exports.selectDurationFilter = function (state) {
+  return state.catalog.durationFilter;
 };
 
 exports.default = exports.catalogSlice.reducer;
@@ -51177,7 +51195,800 @@ Object.defineProperty(exports, "default", {
 var _Divider = _interopRequireDefault(require("./Divider"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./Divider":"../node_modules/@material-ui/core/esm/Divider/Divider.js"}],"components/CarCard.tsx":[function(require,module,exports) {
+},{"./Divider":"../node_modules/@material-ui/core/esm/Divider/Divider.js"}],"../node_modules/@material-ui/core/esm/Fab/Fab.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.styles = void 0;
+
+var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/objectWithoutProperties"));
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var React = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _clsx = _interopRequireDefault(require("clsx"));
+
+var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
+
+var _ButtonBase = _interopRequireDefault(require("../ButtonBase"));
+
+var _capitalize = _interopRequireDefault(require("../utils/capitalize"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var styles = function styles(theme) {
+  return {
+    /* Styles applied to the root element. */
+    root: (0, _extends2.default)({}, theme.typography.button, {
+      boxSizing: 'border-box',
+      minHeight: 36,
+      transition: theme.transitions.create(['background-color', 'box-shadow', 'border'], {
+        duration: theme.transitions.duration.short
+      }),
+      borderRadius: '50%',
+      padding: 0,
+      minWidth: 0,
+      width: 56,
+      height: 56,
+      boxShadow: theme.shadows[6],
+      '&:active': {
+        boxShadow: theme.shadows[12]
+      },
+      color: theme.palette.getContrastText(theme.palette.grey[300]),
+      backgroundColor: theme.palette.grey[300],
+      '&:hover': {
+        backgroundColor: theme.palette.grey.A100,
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: theme.palette.grey[300]
+        },
+        '&$disabled': {
+          backgroundColor: theme.palette.action.disabledBackground
+        },
+        textDecoration: 'none'
+      },
+      '&$focusVisible': {
+        boxShadow: theme.shadows[6]
+      },
+      '&$disabled': {
+        color: theme.palette.action.disabled,
+        boxShadow: theme.shadows[0],
+        backgroundColor: theme.palette.action.disabledBackground
+      }
+    }),
+
+    /* Styles applied to the span element that wraps the children. */
+    label: {
+      width: '100%',
+      // assure the correct width for iOS Safari
+      display: 'inherit',
+      alignItems: 'inherit',
+      justifyContent: 'inherit'
+    },
+
+    /* Styles applied to the root element if `color="primary"`. */
+    primary: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.main,
+      '&:hover': {
+        backgroundColor: theme.palette.primary.dark,
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: theme.palette.primary.main
+        }
+      }
+    },
+
+    /* Styles applied to the root element if `color="secondary"`. */
+    secondary: {
+      color: theme.palette.secondary.contrastText,
+      backgroundColor: theme.palette.secondary.main,
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: theme.palette.secondary.main
+        }
+      }
+    },
+
+    /* Styles applied to the root element if `variant="extended"`. */
+    extended: {
+      borderRadius: 48 / 2,
+      padding: '0 16px',
+      width: 'auto',
+      minHeight: 'auto',
+      minWidth: 48,
+      height: 48,
+      '&$sizeSmall': {
+        width: 'auto',
+        padding: '0 8px',
+        borderRadius: 34 / 2,
+        minWidth: 34,
+        height: 34
+      },
+      '&$sizeMedium': {
+        width: 'auto',
+        padding: '0 16px',
+        borderRadius: 40 / 2,
+        minWidth: 40,
+        height: 40
+      }
+    },
+
+    /* Pseudo-class applied to the ButtonBase root element if the button is keyboard focused. */
+    focusVisible: {},
+
+    /* Pseudo-class applied to the root element if `disabled={true}`. */
+    disabled: {},
+
+    /* Styles applied to the root element if `color="inherit"`. */
+    colorInherit: {
+      color: 'inherit'
+    },
+
+    /* Styles applied to the root element if `size="small"``. */
+    sizeSmall: {
+      width: 40,
+      height: 40
+    },
+
+    /* Styles applied to the root element if `size="medium"``. */
+    sizeMedium: {
+      width: 48,
+      height: 48
+    }
+  };
+};
+
+exports.styles = styles;
+var Fab = /*#__PURE__*/React.forwardRef(function Fab(props, ref) {
+  var children = props.children,
+      classes = props.classes,
+      className = props.className,
+      _props$color = props.color,
+      color = _props$color === void 0 ? 'default' : _props$color,
+      _props$component = props.component,
+      component = _props$component === void 0 ? 'button' : _props$component,
+      _props$disabled = props.disabled,
+      disabled = _props$disabled === void 0 ? false : _props$disabled,
+      _props$disableFocusRi = props.disableFocusRipple,
+      disableFocusRipple = _props$disableFocusRi === void 0 ? false : _props$disableFocusRi,
+      focusVisibleClassName = props.focusVisibleClassName,
+      _props$size = props.size,
+      size = _props$size === void 0 ? 'large' : _props$size,
+      _props$variant = props.variant,
+      variant = _props$variant === void 0 ? 'round' : _props$variant,
+      other = (0, _objectWithoutProperties2.default)(props, ["children", "classes", "className", "color", "component", "disabled", "disableFocusRipple", "focusVisibleClassName", "size", "variant"]);
+  return /*#__PURE__*/React.createElement(_ButtonBase.default, (0, _extends2.default)({
+    className: (0, _clsx.default)(classes.root, className, variant !== "round" && classes.extended, size !== 'large' && classes["size".concat((0, _capitalize.default)(size))], disabled && classes.disabled, {
+      'primary': classes.primary,
+      'secondary': classes.secondary,
+      'inherit': classes.colorInherit
+    }[color]),
+    component: component,
+    disabled: disabled,
+    focusRipple: !disableFocusRipple,
+    focusVisibleClassName: (0, _clsx.default)(classes.focusVisible, focusVisibleClassName),
+    ref: ref
+  }, other), /*#__PURE__*/React.createElement("span", {
+    className: classes.label
+  }, children));
+});
+undefined !== "production" ? Fab.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+
+  /**
+   * The content of the button.
+   */
+  children: _propTypes.default
+  /* @typescript-to-proptypes-ignore */
+  .node.isRequired,
+
+  /**
+   * Override or extend the styles applied to the component.
+   * See [CSS API](#css) below for more details.
+   */
+  classes: _propTypes.default.object,
+
+  /**
+   * @ignore
+   */
+  className: _propTypes.default.string,
+
+  /**
+   * The color of the component. It supports those theme colors that make sense for this component.
+   */
+  color: _propTypes.default.oneOf(['default', 'inherit', 'primary', 'secondary']),
+
+  /**
+   * The component used for the root node.
+   * Either a string to use a HTML element or a component.
+   */
+  component: _propTypes.default
+  /* @typescript-to-proptypes-ignore */
+  .elementType,
+
+  /**
+   * If `true`, the button will be disabled.
+   */
+  disabled: _propTypes.default.bool,
+
+  /**
+   * If `true`, the  keyboard focus ripple will be disabled.
+   */
+  disableFocusRipple: _propTypes.default.bool,
+
+  /**
+   * If `true`, the ripple effect will be disabled.
+   */
+  disableRipple: _propTypes.default.bool,
+
+  /**
+   * @ignore
+   */
+  focusVisibleClassName: _propTypes.default.string,
+
+  /**
+   * The URL to link to when the button is clicked.
+   * If defined, an `a` element will be used as the root node.
+   */
+  href: _propTypes.default.string,
+
+  /**
+   * The size of the button.
+   * `small` is equivalent to the dense button styling.
+   */
+  size: _propTypes.default.oneOf(['large', 'medium', 'small']),
+
+  /**
+   * The variant to use.
+   */
+  variant: _propTypes.default.oneOf(['extended', 'round'])
+} : void 0;
+
+var _default = (0, _withStyles.default)(styles, {
+  name: 'MuiFab'
+})(Fab);
+
+exports.default = _default;
+},{"@babel/runtime/helpers/esm/objectWithoutProperties":"../node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js","@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","clsx":"../node_modules/clsx/dist/clsx.m.js","../styles/withStyles":"../node_modules/@material-ui/core/esm/styles/withStyles.js","../ButtonBase":"../node_modules/@material-ui/core/esm/ButtonBase/index.js","../utils/capitalize":"../node_modules/@material-ui/core/esm/utils/capitalize.js"}],"../node_modules/@material-ui/core/esm/Fab/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    return _Fab.default;
+  }
+});
+
+var _Fab = _interopRequireDefault(require("./Fab"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./Fab":"../node_modules/@material-ui/core/esm/Fab/Fab.js"}],"../node_modules/@material-ui/core/esm/styles/createMuiStrictModeTheme.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createMuiStrictModeTheme;
+
+var _utils = require("@material-ui/utils");
+
+var _createMuiTheme = _interopRequireDefault(require("./createMuiTheme"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function createMuiStrictModeTheme(options) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  return _createMuiTheme.default.apply(void 0, [(0, _utils.deepmerge)({
+    unstable_strictMode: true
+  }, options)].concat(args));
+}
+},{"@material-ui/utils":"../node_modules/@material-ui/utils/esm/index.js","./createMuiTheme":"../node_modules/@material-ui/core/esm/styles/createMuiTheme.js"}],"../node_modules/@material-ui/core/esm/styles/createStyles.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createStyles;
+
+var _styles = require("@material-ui/styles");
+
+// let warnOnce = false;
+// To remove in v5
+function createStyles(styles) {
+  // warning(
+  //   warnOnce,
+  //   [
+  //     'Material-UI: createStyles from @material-ui/core/styles is deprecated.',
+  //     'Please use @material-ui/styles/createStyles',
+  //   ].join('\n'),
+  // );
+  // warnOnce = true;
+  return (0, _styles.createStyles)(styles);
+}
+},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js"}],"../node_modules/@material-ui/core/esm/styles/makeStyles.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _styles = require("@material-ui/styles");
+
+var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function makeStyles(stylesOrCreator) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  return (0, _styles.makeStyles)(stylesOrCreator, (0, _extends2.default)({
+    defaultTheme: _defaultTheme.default
+  }, options));
+}
+
+var _default = makeStyles;
+exports.default = _default;
+},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/cssUtils.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isUnitless = isUnitless;
+exports.getUnit = getUnit;
+exports.toUnitless = toUnitless;
+exports.convertLength = convertLength;
+exports.alignProperty = alignProperty;
+exports.fontGrid = fontGrid;
+exports.responsiveProperty = responsiveProperty;
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/defineProperty"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function isUnitless(value) {
+  return String(parseFloat(value)).length === String(value).length;
+} // Ported from Compass
+// https://github.com/Compass/compass/blob/master/core/stylesheets/compass/typography/_units.scss
+// Emulate the sass function "unit"
+
+
+function getUnit(input) {
+  return String(input).match(/[\d.\-+]*\s*(.*)/)[1] || '';
+} // Emulate the sass function "unitless"
+
+
+function toUnitless(length) {
+  return parseFloat(length);
+} // Convert any CSS <length> or <percentage> value to any another.
+// From https://github.com/KyleAMathews/convert-css-length
+
+
+function convertLength(baseFontSize) {
+  return function (length, toUnit) {
+    var fromUnit = getUnit(length); // Optimize for cases where `from` and `to` units are accidentally the same.
+
+    if (fromUnit === toUnit) {
+      return length;
+    } // Convert input length to pixels.
+
+
+    var pxLength = toUnitless(length);
+
+    if (fromUnit !== 'px') {
+      if (fromUnit === 'em') {
+        pxLength = toUnitless(length) * toUnitless(baseFontSize);
+      } else if (fromUnit === 'rem') {
+        pxLength = toUnitless(length) * toUnitless(baseFontSize);
+        return length;
+      }
+    } // Convert length in pixels to the output unit
+
+
+    var outputLength = pxLength;
+
+    if (toUnit !== 'px') {
+      if (toUnit === 'em') {
+        outputLength = pxLength / toUnitless(baseFontSize);
+      } else if (toUnit === 'rem') {
+        outputLength = pxLength / toUnitless(baseFontSize);
+      } else {
+        return length;
+      }
+    }
+
+    return parseFloat(outputLength.toFixed(5)) + toUnit;
+  };
+}
+
+function alignProperty(_ref) {
+  var size = _ref.size,
+      grid = _ref.grid;
+  var sizeBelow = size - size % grid;
+  var sizeAbove = sizeBelow + grid;
+  return size - sizeBelow < sizeAbove - size ? sizeBelow : sizeAbove;
+} // fontGrid finds a minimal grid (in rem) for the fontSize values so that the
+// lineHeight falls under a x pixels grid, 4px in the case of Material Design,
+// without changing the relative line height
+
+
+function fontGrid(_ref2) {
+  var lineHeight = _ref2.lineHeight,
+      pixels = _ref2.pixels,
+      htmlFontSize = _ref2.htmlFontSize;
+  return pixels / (lineHeight * htmlFontSize);
+}
+/**
+ * generate a responsive version of a given CSS property
+ * @example
+ * responsiveProperty({
+ *   cssProperty: 'fontSize',
+ *   min: 15,
+ *   max: 20,
+ *   unit: 'px',
+ *   breakpoints: [300, 600],
+ * })
+ *
+ * // this returns
+ *
+ * {
+ *   fontSize: '15px',
+ *   '@media (min-width:300px)': {
+ *     fontSize: '17.5px',
+ *   },
+ *   '@media (min-width:600px)': {
+ *     fontSize: '20px',
+ *   },
+ * }
+ *
+ * @param {Object} params
+ * @param {string} params.cssProperty - The CSS property to be made responsive
+ * @param {number} params.min - The smallest value of the CSS property
+ * @param {number} params.max - The largest value of the CSS property
+ * @param {string} [params.unit] - The unit to be used for the CSS property
+ * @param {Array.number} [params.breakpoints]  - An array of breakpoints
+ * @param {number} [params.alignStep] - Round scaled value to fall under this grid
+ * @returns {Object} responsive styles for {params.cssProperty}
+ */
+
+
+function responsiveProperty(_ref3) {
+  var cssProperty = _ref3.cssProperty,
+      min = _ref3.min,
+      max = _ref3.max,
+      _ref3$unit = _ref3.unit,
+      unit = _ref3$unit === void 0 ? 'rem' : _ref3$unit,
+      _ref3$breakpoints = _ref3.breakpoints,
+      breakpoints = _ref3$breakpoints === void 0 ? [600, 960, 1280] : _ref3$breakpoints,
+      _ref3$transform = _ref3.transform,
+      transform = _ref3$transform === void 0 ? null : _ref3$transform;
+  var output = (0, _defineProperty2.default)({}, cssProperty, "".concat(min).concat(unit));
+  var factor = (max - min) / breakpoints[breakpoints.length - 1];
+  breakpoints.forEach(function (breakpoint) {
+    var value = min + factor * breakpoint;
+
+    if (transform !== null) {
+      value = transform(value);
+    }
+
+    output["@media (min-width:".concat(breakpoint, "px)")] = (0, _defineProperty2.default)({}, cssProperty, "".concat(Math.round(value * 10000) / 10000).concat(unit));
+  });
+  return output;
+}
+},{"@babel/runtime/helpers/esm/defineProperty":"../node_modules/@babel/runtime/helpers/esm/defineProperty.js"}],"../node_modules/@material-ui/core/esm/styles/responsiveFontSizes.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = responsiveFontSizes;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
+
+var _utils = require("@material-ui/utils");
+
+var _cssUtils = require("./cssUtils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function responsiveFontSizes(themeInput) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _options$breakpoints = options.breakpoints,
+      breakpoints = _options$breakpoints === void 0 ? ['sm', 'md', 'lg'] : _options$breakpoints,
+      _options$disableAlign = options.disableAlign,
+      disableAlign = _options$disableAlign === void 0 ? false : _options$disableAlign,
+      _options$factor = options.factor,
+      factor = _options$factor === void 0 ? 2 : _options$factor,
+      _options$variants = options.variants,
+      variants = _options$variants === void 0 ? ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'subtitle1', 'subtitle2', 'body1', 'body2', 'caption', 'button', 'overline'] : _options$variants;
+  var theme = (0, _extends2.default)({}, themeInput);
+  theme.typography = (0, _extends2.default)({}, theme.typography);
+  var typography = theme.typography; // Convert between css lengths e.g. em->px or px->rem
+  // Set the baseFontSize for your project. Defaults to 16px (also the browser default).
+
+  var convert = (0, _cssUtils.convertLength)(typography.htmlFontSize);
+  var breakpointValues = breakpoints.map(function (x) {
+    return theme.breakpoints.values[x];
+  });
+  variants.forEach(function (variant) {
+    var style = typography[variant];
+    var remFontSize = parseFloat(convert(style.fontSize, 'rem'));
+
+    if (remFontSize <= 1) {
+      return;
+    }
+
+    var maxFontSize = remFontSize;
+    var minFontSize = 1 + (maxFontSize - 1) / factor;
+    var lineHeight = style.lineHeight;
+
+    if (!(0, _cssUtils.isUnitless)(lineHeight) && !disableAlign) {
+      throw new Error(undefined !== "production" ? "Material-UI: Unsupported non-unitless line height with grid alignment.\nUse unitless line heights instead." : (0, _utils.formatMuiErrorMessage)(6));
+    }
+
+    if (!(0, _cssUtils.isUnitless)(lineHeight)) {
+      // make it unitless
+      lineHeight = parseFloat(convert(lineHeight, 'rem')) / parseFloat(remFontSize);
+    }
+
+    var transform = null;
+
+    if (!disableAlign) {
+      transform = function transform(value) {
+        return (0, _cssUtils.alignProperty)({
+          size: value,
+          grid: (0, _cssUtils.fontGrid)({
+            pixels: 4,
+            lineHeight: lineHeight,
+            htmlFontSize: typography.htmlFontSize
+          })
+        });
+      };
+    }
+
+    typography[variant] = (0, _extends2.default)({}, style, (0, _cssUtils.responsiveProperty)({
+      cssProperty: 'fontSize',
+      min: minFontSize,
+      max: maxFontSize,
+      unit: 'rem',
+      breakpoints: breakpointValues,
+      transform: transform
+    }));
+  });
+  return theme;
+}
+},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@material-ui/utils":"../node_modules/@material-ui/utils/esm/index.js","./cssUtils":"../node_modules/@material-ui/core/esm/styles/cssUtils.js"}],"../node_modules/@material-ui/core/esm/styles/useTheme.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = useTheme;
+
+var _styles = require("@material-ui/styles");
+
+var _react = _interopRequireDefault(require("react"));
+
+var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function useTheme() {
+  var theme = (0, _styles.useTheme)() || _defaultTheme.default;
+
+  if (undefined !== 'production') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    _react.default.useDebugValue(theme);
+  }
+
+  return theme;
+}
+},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","react":"../node_modules/react/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/withTheme.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _styles = require("@material-ui/styles");
+
+var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var withTheme = (0, _styles.withThemeCreator)({
+  defaultTheme: _defaultTheme.default
+});
+var _default = withTheme;
+exports.default = _default;
+},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  createMuiTheme: true,
+  unstable_createMuiStrictModeTheme: true,
+  createStyles: true,
+  makeStyles: true,
+  responsiveFontSizes: true,
+  styled: true,
+  useTheme: true,
+  withStyles: true,
+  withTheme: true,
+  createGenerateClassName: true,
+  jssPreset: true,
+  ServerStyleSheets: true,
+  StylesProvider: true,
+  MuiThemeProvider: true,
+  ThemeProvider: true
+};
+Object.defineProperty(exports, "createMuiTheme", {
+  enumerable: true,
+  get: function () {
+    return _createMuiTheme.default;
+  }
+});
+Object.defineProperty(exports, "unstable_createMuiStrictModeTheme", {
+  enumerable: true,
+  get: function () {
+    return _createMuiStrictModeTheme.default;
+  }
+});
+Object.defineProperty(exports, "createStyles", {
+  enumerable: true,
+  get: function () {
+    return _createStyles.default;
+  }
+});
+Object.defineProperty(exports, "makeStyles", {
+  enumerable: true,
+  get: function () {
+    return _makeStyles.default;
+  }
+});
+Object.defineProperty(exports, "responsiveFontSizes", {
+  enumerable: true,
+  get: function () {
+    return _responsiveFontSizes.default;
+  }
+});
+Object.defineProperty(exports, "styled", {
+  enumerable: true,
+  get: function () {
+    return _styled.default;
+  }
+});
+Object.defineProperty(exports, "useTheme", {
+  enumerable: true,
+  get: function () {
+    return _useTheme.default;
+  }
+});
+Object.defineProperty(exports, "withStyles", {
+  enumerable: true,
+  get: function () {
+    return _withStyles.default;
+  }
+});
+Object.defineProperty(exports, "withTheme", {
+  enumerable: true,
+  get: function () {
+    return _withTheme.default;
+  }
+});
+Object.defineProperty(exports, "createGenerateClassName", {
+  enumerable: true,
+  get: function () {
+    return _styles.createGenerateClassName;
+  }
+});
+Object.defineProperty(exports, "jssPreset", {
+  enumerable: true,
+  get: function () {
+    return _styles.jssPreset;
+  }
+});
+Object.defineProperty(exports, "ServerStyleSheets", {
+  enumerable: true,
+  get: function () {
+    return _styles.ServerStyleSheets;
+  }
+});
+Object.defineProperty(exports, "StylesProvider", {
+  enumerable: true,
+  get: function () {
+    return _styles.StylesProvider;
+  }
+});
+Object.defineProperty(exports, "MuiThemeProvider", {
+  enumerable: true,
+  get: function () {
+    return _styles.ThemeProvider;
+  }
+});
+Object.defineProperty(exports, "ThemeProvider", {
+  enumerable: true,
+  get: function () {
+    return _styles.ThemeProvider;
+  }
+});
+
+var _colorManipulator = require("./colorManipulator");
+
+Object.keys(_colorManipulator).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _colorManipulator[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _colorManipulator[key];
+    }
+  });
+});
+
+var _createMuiTheme = _interopRequireDefault(require("./createMuiTheme"));
+
+var _createMuiStrictModeTheme = _interopRequireDefault(require("./createMuiStrictModeTheme"));
+
+var _createStyles = _interopRequireDefault(require("./createStyles"));
+
+var _makeStyles = _interopRequireDefault(require("./makeStyles"));
+
+var _responsiveFontSizes = _interopRequireDefault(require("./responsiveFontSizes"));
+
+var _styled = _interopRequireDefault(require("./styled"));
+
+var _transitions = require("./transitions");
+
+Object.keys(_transitions).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _transitions[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _transitions[key];
+    }
+  });
+});
+
+var _useTheme = _interopRequireDefault(require("./useTheme"));
+
+var _withStyles = _interopRequireDefault(require("./withStyles"));
+
+var _withTheme = _interopRequireDefault(require("./withTheme"));
+
+var _styles = require("@material-ui/styles");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./colorManipulator":"../node_modules/@material-ui/core/esm/styles/colorManipulator.js","./createMuiTheme":"../node_modules/@material-ui/core/esm/styles/createMuiTheme.js","./createMuiStrictModeTheme":"../node_modules/@material-ui/core/esm/styles/createMuiStrictModeTheme.js","./createStyles":"../node_modules/@material-ui/core/esm/styles/createStyles.js","./makeStyles":"../node_modules/@material-ui/core/esm/styles/makeStyles.js","./responsiveFontSizes":"../node_modules/@material-ui/core/esm/styles/responsiveFontSizes.js","./styled":"../node_modules/@material-ui/core/esm/styles/styled.js","./transitions":"../node_modules/@material-ui/core/esm/styles/transitions.js","./useTheme":"../node_modules/@material-ui/core/esm/styles/useTheme.js","./withStyles":"../node_modules/@material-ui/core/esm/styles/withStyles.js","./withTheme":"../node_modules/@material-ui/core/esm/styles/withTheme.js","@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js"}],"components/CarCard.tsx":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -51238,33 +52049,70 @@ var Box_1 = __importDefault(require("@material-ui/core/Box"));
 
 var Divider_1 = __importDefault(require("@material-ui/core/Divider"));
 
+var Fab_1 = __importDefault(require("@material-ui/core/Fab"));
+
+var styles_1 = require("@material-ui/core/styles");
+
+var catalogSlice_1 = require("../features/catalogSlice");
+
+var react_redux_1 = require("react-redux");
+
+var useStyles = styles_1.makeStyles(function (theme) {
+  return {
+    fab: {
+      position: "absolute",
+      top: theme.spacing(7),
+      right: theme.spacing(2)
+    }
+  };
+});
+
 var CarCard = function CarCard(_a) {
+  var _b, _c;
+
   var car = _a.car;
+  var classes = useStyles();
+  var distanceFilter = react_redux_1.useSelector(catalogSlice_1.selectDistancefilter);
+  var durationFilter = react_redux_1.useSelector(catalogSlice_1.selectDurationFilter);
   return React.createElement(Box_1.default, {
-    m: 1
-  }, React.createElement(Card_1.default, null, React.createElement(CardActionArea_1.default, null, React.createElement("img", {
+    m: 1,
+    width: "300px"
+  }, React.createElement(Card_1.default, null, React.createElement(CardActionArea_1.default, null, React.createElement(Box_1.default, {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center"
+  }, React.createElement("img", {
     src: car.picturePath,
     alt: "test",
     style: {
       maxWidth: 300
     }
-  }), React.createElement(CardContent_1.default, null, React.createElement(Box_1.default, {
+  })), car.pricePerDay && car.pricePerKm && (durationFilter || distanceFilter) && React.createElement(Fab_1.default, {
+    className: classes.fab,
+    color: "secondary"
+  }, React.createElement(Box_1.default, {
+    color: "white",
+    display: "flex"
+  }, car.pricePerDay * Number(durationFilter) + car.pricePerKm * Number(distanceFilter), " \u20AC")), React.createElement(CardContent_1.default, null, React.createElement(Box_1.default, {
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    fontSize: 24,
+    fontSize: 16,
     mb: 0.5
   }, car.brand, " ", car.model), React.createElement(Divider_1.default, null), React.createElement(Box_1.default, {
-    mt: 1
+    mt: 1,
+    display: "flex",
+    width: "100%",
+    justifyContent: "center"
   }, React.createElement(Typography_1.default, {
     variant: "body2",
     color: "textSecondary",
     component: "p"
-  }, "Price per day: ", car.pricePerDay, " \u2022 Price per Km: ", car.pricePerKm))))));
+  }, "MAx duration: ", (_b = car.availability) === null || _b === void 0 ? void 0 : _b.maxDuration, " \u2022 Max distance: ", (_c = car.availability) === null || _c === void 0 ? void 0 : _c.maxDistance))))));
 };
 
 exports.default = CarCard;
-},{"react":"../node_modules/react/index.js","@material-ui/core/Card":"../node_modules/@material-ui/core/esm/Card/index.js","@material-ui/core/CardActionArea":"../node_modules/@material-ui/core/esm/CardActionArea/index.js","@material-ui/core/CardContent":"../node_modules/@material-ui/core/esm/CardContent/index.js","@material-ui/core/Typography":"../node_modules/@material-ui/core/esm/Typography/index.js","@material-ui/core/Box":"../node_modules/@material-ui/core/esm/Box/index.js","@material-ui/core/Divider":"../node_modules/@material-ui/core/esm/Divider/index.js"}],"../node_modules/@material-ui/core/esm/FormControl/formControlState.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@material-ui/core/Card":"../node_modules/@material-ui/core/esm/Card/index.js","@material-ui/core/CardActionArea":"../node_modules/@material-ui/core/esm/CardActionArea/index.js","@material-ui/core/CardContent":"../node_modules/@material-ui/core/esm/CardContent/index.js","@material-ui/core/Typography":"../node_modules/@material-ui/core/esm/Typography/index.js","@material-ui/core/Box":"../node_modules/@material-ui/core/esm/Box/index.js","@material-ui/core/Divider":"../node_modules/@material-ui/core/esm/Divider/index.js","@material-ui/core/Fab":"../node_modules/@material-ui/core/esm/Fab/index.js","@material-ui/core/styles":"../node_modules/@material-ui/core/esm/styles/index.js","../features/catalogSlice":"features/catalogSlice.ts","react-redux":"../node_modules/react-redux/es/index.js"}],"../node_modules/@material-ui/core/esm/FormControl/formControlState.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53331,292 +54179,7 @@ Object.defineProperty(exports, "default", {
 var _Button = _interopRequireDefault(require("./Button"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./Button":"../node_modules/@material-ui/core/esm/Button/Button.js"}],"../node_modules/@material-ui/core/esm/Fab/Fab.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = exports.styles = void 0;
-
-var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/objectWithoutProperties"));
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
-
-var React = _interopRequireWildcard(require("react"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _clsx = _interopRequireDefault(require("clsx"));
-
-var _withStyles = _interopRequireDefault(require("../styles/withStyles"));
-
-var _ButtonBase = _interopRequireDefault(require("../ButtonBase"));
-
-var _capitalize = _interopRequireDefault(require("../utils/capitalize"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var styles = function styles(theme) {
-  return {
-    /* Styles applied to the root element. */
-    root: (0, _extends2.default)({}, theme.typography.button, {
-      boxSizing: 'border-box',
-      minHeight: 36,
-      transition: theme.transitions.create(['background-color', 'box-shadow', 'border'], {
-        duration: theme.transitions.duration.short
-      }),
-      borderRadius: '50%',
-      padding: 0,
-      minWidth: 0,
-      width: 56,
-      height: 56,
-      boxShadow: theme.shadows[6],
-      '&:active': {
-        boxShadow: theme.shadows[12]
-      },
-      color: theme.palette.getContrastText(theme.palette.grey[300]),
-      backgroundColor: theme.palette.grey[300],
-      '&:hover': {
-        backgroundColor: theme.palette.grey.A100,
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: theme.palette.grey[300]
-        },
-        '&$disabled': {
-          backgroundColor: theme.palette.action.disabledBackground
-        },
-        textDecoration: 'none'
-      },
-      '&$focusVisible': {
-        boxShadow: theme.shadows[6]
-      },
-      '&$disabled': {
-        color: theme.palette.action.disabled,
-        boxShadow: theme.shadows[0],
-        backgroundColor: theme.palette.action.disabledBackground
-      }
-    }),
-
-    /* Styles applied to the span element that wraps the children. */
-    label: {
-      width: '100%',
-      // assure the correct width for iOS Safari
-      display: 'inherit',
-      alignItems: 'inherit',
-      justifyContent: 'inherit'
-    },
-
-    /* Styles applied to the root element if `color="primary"`. */
-    primary: {
-      color: theme.palette.primary.contrastText,
-      backgroundColor: theme.palette.primary.main,
-      '&:hover': {
-        backgroundColor: theme.palette.primary.dark,
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: theme.palette.primary.main
-        }
-      }
-    },
-
-    /* Styles applied to the root element if `color="secondary"`. */
-    secondary: {
-      color: theme.palette.secondary.contrastText,
-      backgroundColor: theme.palette.secondary.main,
-      '&:hover': {
-        backgroundColor: theme.palette.secondary.dark,
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: theme.palette.secondary.main
-        }
-      }
-    },
-
-    /* Styles applied to the root element if `variant="extended"`. */
-    extended: {
-      borderRadius: 48 / 2,
-      padding: '0 16px',
-      width: 'auto',
-      minHeight: 'auto',
-      minWidth: 48,
-      height: 48,
-      '&$sizeSmall': {
-        width: 'auto',
-        padding: '0 8px',
-        borderRadius: 34 / 2,
-        minWidth: 34,
-        height: 34
-      },
-      '&$sizeMedium': {
-        width: 'auto',
-        padding: '0 16px',
-        borderRadius: 40 / 2,
-        minWidth: 40,
-        height: 40
-      }
-    },
-
-    /* Pseudo-class applied to the ButtonBase root element if the button is keyboard focused. */
-    focusVisible: {},
-
-    /* Pseudo-class applied to the root element if `disabled={true}`. */
-    disabled: {},
-
-    /* Styles applied to the root element if `color="inherit"`. */
-    colorInherit: {
-      color: 'inherit'
-    },
-
-    /* Styles applied to the root element if `size="small"``. */
-    sizeSmall: {
-      width: 40,
-      height: 40
-    },
-
-    /* Styles applied to the root element if `size="medium"``. */
-    sizeMedium: {
-      width: 48,
-      height: 48
-    }
-  };
-};
-
-exports.styles = styles;
-var Fab = /*#__PURE__*/React.forwardRef(function Fab(props, ref) {
-  var children = props.children,
-      classes = props.classes,
-      className = props.className,
-      _props$color = props.color,
-      color = _props$color === void 0 ? 'default' : _props$color,
-      _props$component = props.component,
-      component = _props$component === void 0 ? 'button' : _props$component,
-      _props$disabled = props.disabled,
-      disabled = _props$disabled === void 0 ? false : _props$disabled,
-      _props$disableFocusRi = props.disableFocusRipple,
-      disableFocusRipple = _props$disableFocusRi === void 0 ? false : _props$disableFocusRi,
-      focusVisibleClassName = props.focusVisibleClassName,
-      _props$size = props.size,
-      size = _props$size === void 0 ? 'large' : _props$size,
-      _props$variant = props.variant,
-      variant = _props$variant === void 0 ? 'round' : _props$variant,
-      other = (0, _objectWithoutProperties2.default)(props, ["children", "classes", "className", "color", "component", "disabled", "disableFocusRipple", "focusVisibleClassName", "size", "variant"]);
-  return /*#__PURE__*/React.createElement(_ButtonBase.default, (0, _extends2.default)({
-    className: (0, _clsx.default)(classes.root, className, variant !== "round" && classes.extended, size !== 'large' && classes["size".concat((0, _capitalize.default)(size))], disabled && classes.disabled, {
-      'primary': classes.primary,
-      'secondary': classes.secondary,
-      'inherit': classes.colorInherit
-    }[color]),
-    component: component,
-    disabled: disabled,
-    focusRipple: !disableFocusRipple,
-    focusVisibleClassName: (0, _clsx.default)(classes.focusVisible, focusVisibleClassName),
-    ref: ref
-  }, other), /*#__PURE__*/React.createElement("span", {
-    className: classes.label
-  }, children));
-});
-undefined !== "production" ? Fab.propTypes = {
-  // ----------------------------- Warning --------------------------------
-  // | These PropTypes are generated from the TypeScript type definitions |
-  // |     To update them edit the d.ts file and run "yarn proptypes"     |
-  // ----------------------------------------------------------------------
-
-  /**
-   * The content of the button.
-   */
-  children: _propTypes.default
-  /* @typescript-to-proptypes-ignore */
-  .node.isRequired,
-
-  /**
-   * Override or extend the styles applied to the component.
-   * See [CSS API](#css) below for more details.
-   */
-  classes: _propTypes.default.object,
-
-  /**
-   * @ignore
-   */
-  className: _propTypes.default.string,
-
-  /**
-   * The color of the component. It supports those theme colors that make sense for this component.
-   */
-  color: _propTypes.default.oneOf(['default', 'inherit', 'primary', 'secondary']),
-
-  /**
-   * The component used for the root node.
-   * Either a string to use a HTML element or a component.
-   */
-  component: _propTypes.default
-  /* @typescript-to-proptypes-ignore */
-  .elementType,
-
-  /**
-   * If `true`, the button will be disabled.
-   */
-  disabled: _propTypes.default.bool,
-
-  /**
-   * If `true`, the  keyboard focus ripple will be disabled.
-   */
-  disableFocusRipple: _propTypes.default.bool,
-
-  /**
-   * If `true`, the ripple effect will be disabled.
-   */
-  disableRipple: _propTypes.default.bool,
-
-  /**
-   * @ignore
-   */
-  focusVisibleClassName: _propTypes.default.string,
-
-  /**
-   * The URL to link to when the button is clicked.
-   * If defined, an `a` element will be used as the root node.
-   */
-  href: _propTypes.default.string,
-
-  /**
-   * The size of the button.
-   * `small` is equivalent to the dense button styling.
-   */
-  size: _propTypes.default.oneOf(['large', 'medium', 'small']),
-
-  /**
-   * The variant to use.
-   */
-  variant: _propTypes.default.oneOf(['extended', 'round'])
-} : void 0;
-
-var _default = (0, _withStyles.default)(styles, {
-  name: 'MuiFab'
-})(Fab);
-
-exports.default = _default;
-},{"@babel/runtime/helpers/esm/objectWithoutProperties":"../node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js","@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","clsx":"../node_modules/clsx/dist/clsx.m.js","../styles/withStyles":"../node_modules/@material-ui/core/esm/styles/withStyles.js","../ButtonBase":"../node_modules/@material-ui/core/esm/ButtonBase/index.js","../utils/capitalize":"../node_modules/@material-ui/core/esm/utils/capitalize.js"}],"../node_modules/@material-ui/core/esm/Fab/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "default", {
-  enumerable: true,
-  get: function () {
-    return _Fab.default;
-  }
-});
-
-var _Fab = _interopRequireDefault(require("./Fab"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./Fab":"../node_modules/@material-ui/core/esm/Fab/Fab.js"}],"../node_modules/@babel/runtime/helpers/interopRequireDefault.js":[function(require,module,exports) {
+},{"./Button":"../node_modules/@material-ui/core/esm/Button/Button.js"}],"../node_modules/@babel/runtime/helpers/interopRequireDefault.js":[function(require,module,exports) {
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     "default": obj
@@ -54616,515 +55179,7 @@ Object.defineProperty(exports, "default", {
 var _CircularProgress = _interopRequireDefault(require("./CircularProgress"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./CircularProgress":"../node_modules/@material-ui/core/esm/CircularProgress/CircularProgress.js"}],"../node_modules/@material-ui/core/esm/styles/createMuiStrictModeTheme.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createMuiStrictModeTheme;
-
-var _utils = require("@material-ui/utils");
-
-var _createMuiTheme = _interopRequireDefault(require("./createMuiTheme"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function createMuiStrictModeTheme(options) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
-
-  return _createMuiTheme.default.apply(void 0, [(0, _utils.deepmerge)({
-    unstable_strictMode: true
-  }, options)].concat(args));
-}
-},{"@material-ui/utils":"../node_modules/@material-ui/utils/esm/index.js","./createMuiTheme":"../node_modules/@material-ui/core/esm/styles/createMuiTheme.js"}],"../node_modules/@material-ui/core/esm/styles/createStyles.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createStyles;
-
-var _styles = require("@material-ui/styles");
-
-// let warnOnce = false;
-// To remove in v5
-function createStyles(styles) {
-  // warning(
-  //   warnOnce,
-  //   [
-  //     'Material-UI: createStyles from @material-ui/core/styles is deprecated.',
-  //     'Please use @material-ui/styles/createStyles',
-  //   ].join('\n'),
-  // );
-  // warnOnce = true;
-  return (0, _styles.createStyles)(styles);
-}
-},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js"}],"../node_modules/@material-ui/core/esm/styles/makeStyles.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
-
-var _styles = require("@material-ui/styles");
-
-var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function makeStyles(stylesOrCreator) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  return (0, _styles.makeStyles)(stylesOrCreator, (0, _extends2.default)({
-    defaultTheme: _defaultTheme.default
-  }, options));
-}
-
-var _default = makeStyles;
-exports.default = _default;
-},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/cssUtils.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isUnitless = isUnitless;
-exports.getUnit = getUnit;
-exports.toUnitless = toUnitless;
-exports.convertLength = convertLength;
-exports.alignProperty = alignProperty;
-exports.fontGrid = fontGrid;
-exports.responsiveProperty = responsiveProperty;
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/defineProperty"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function isUnitless(value) {
-  return String(parseFloat(value)).length === String(value).length;
-} // Ported from Compass
-// https://github.com/Compass/compass/blob/master/core/stylesheets/compass/typography/_units.scss
-// Emulate the sass function "unit"
-
-
-function getUnit(input) {
-  return String(input).match(/[\d.\-+]*\s*(.*)/)[1] || '';
-} // Emulate the sass function "unitless"
-
-
-function toUnitless(length) {
-  return parseFloat(length);
-} // Convert any CSS <length> or <percentage> value to any another.
-// From https://github.com/KyleAMathews/convert-css-length
-
-
-function convertLength(baseFontSize) {
-  return function (length, toUnit) {
-    var fromUnit = getUnit(length); // Optimize for cases where `from` and `to` units are accidentally the same.
-
-    if (fromUnit === toUnit) {
-      return length;
-    } // Convert input length to pixels.
-
-
-    var pxLength = toUnitless(length);
-
-    if (fromUnit !== 'px') {
-      if (fromUnit === 'em') {
-        pxLength = toUnitless(length) * toUnitless(baseFontSize);
-      } else if (fromUnit === 'rem') {
-        pxLength = toUnitless(length) * toUnitless(baseFontSize);
-        return length;
-      }
-    } // Convert length in pixels to the output unit
-
-
-    var outputLength = pxLength;
-
-    if (toUnit !== 'px') {
-      if (toUnit === 'em') {
-        outputLength = pxLength / toUnitless(baseFontSize);
-      } else if (toUnit === 'rem') {
-        outputLength = pxLength / toUnitless(baseFontSize);
-      } else {
-        return length;
-      }
-    }
-
-    return parseFloat(outputLength.toFixed(5)) + toUnit;
-  };
-}
-
-function alignProperty(_ref) {
-  var size = _ref.size,
-      grid = _ref.grid;
-  var sizeBelow = size - size % grid;
-  var sizeAbove = sizeBelow + grid;
-  return size - sizeBelow < sizeAbove - size ? sizeBelow : sizeAbove;
-} // fontGrid finds a minimal grid (in rem) for the fontSize values so that the
-// lineHeight falls under a x pixels grid, 4px in the case of Material Design,
-// without changing the relative line height
-
-
-function fontGrid(_ref2) {
-  var lineHeight = _ref2.lineHeight,
-      pixels = _ref2.pixels,
-      htmlFontSize = _ref2.htmlFontSize;
-  return pixels / (lineHeight * htmlFontSize);
-}
-/**
- * generate a responsive version of a given CSS property
- * @example
- * responsiveProperty({
- *   cssProperty: 'fontSize',
- *   min: 15,
- *   max: 20,
- *   unit: 'px',
- *   breakpoints: [300, 600],
- * })
- *
- * // this returns
- *
- * {
- *   fontSize: '15px',
- *   '@media (min-width:300px)': {
- *     fontSize: '17.5px',
- *   },
- *   '@media (min-width:600px)': {
- *     fontSize: '20px',
- *   },
- * }
- *
- * @param {Object} params
- * @param {string} params.cssProperty - The CSS property to be made responsive
- * @param {number} params.min - The smallest value of the CSS property
- * @param {number} params.max - The largest value of the CSS property
- * @param {string} [params.unit] - The unit to be used for the CSS property
- * @param {Array.number} [params.breakpoints]  - An array of breakpoints
- * @param {number} [params.alignStep] - Round scaled value to fall under this grid
- * @returns {Object} responsive styles for {params.cssProperty}
- */
-
-
-function responsiveProperty(_ref3) {
-  var cssProperty = _ref3.cssProperty,
-      min = _ref3.min,
-      max = _ref3.max,
-      _ref3$unit = _ref3.unit,
-      unit = _ref3$unit === void 0 ? 'rem' : _ref3$unit,
-      _ref3$breakpoints = _ref3.breakpoints,
-      breakpoints = _ref3$breakpoints === void 0 ? [600, 960, 1280] : _ref3$breakpoints,
-      _ref3$transform = _ref3.transform,
-      transform = _ref3$transform === void 0 ? null : _ref3$transform;
-  var output = (0, _defineProperty2.default)({}, cssProperty, "".concat(min).concat(unit));
-  var factor = (max - min) / breakpoints[breakpoints.length - 1];
-  breakpoints.forEach(function (breakpoint) {
-    var value = min + factor * breakpoint;
-
-    if (transform !== null) {
-      value = transform(value);
-    }
-
-    output["@media (min-width:".concat(breakpoint, "px)")] = (0, _defineProperty2.default)({}, cssProperty, "".concat(Math.round(value * 10000) / 10000).concat(unit));
-  });
-  return output;
-}
-},{"@babel/runtime/helpers/esm/defineProperty":"../node_modules/@babel/runtime/helpers/esm/defineProperty.js"}],"../node_modules/@material-ui/core/esm/styles/responsiveFontSizes.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = responsiveFontSizes;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/esm/extends"));
-
-var _utils = require("@material-ui/utils");
-
-var _cssUtils = require("./cssUtils");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function responsiveFontSizes(themeInput) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _options$breakpoints = options.breakpoints,
-      breakpoints = _options$breakpoints === void 0 ? ['sm', 'md', 'lg'] : _options$breakpoints,
-      _options$disableAlign = options.disableAlign,
-      disableAlign = _options$disableAlign === void 0 ? false : _options$disableAlign,
-      _options$factor = options.factor,
-      factor = _options$factor === void 0 ? 2 : _options$factor,
-      _options$variants = options.variants,
-      variants = _options$variants === void 0 ? ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'subtitle1', 'subtitle2', 'body1', 'body2', 'caption', 'button', 'overline'] : _options$variants;
-  var theme = (0, _extends2.default)({}, themeInput);
-  theme.typography = (0, _extends2.default)({}, theme.typography);
-  var typography = theme.typography; // Convert between css lengths e.g. em->px or px->rem
-  // Set the baseFontSize for your project. Defaults to 16px (also the browser default).
-
-  var convert = (0, _cssUtils.convertLength)(typography.htmlFontSize);
-  var breakpointValues = breakpoints.map(function (x) {
-    return theme.breakpoints.values[x];
-  });
-  variants.forEach(function (variant) {
-    var style = typography[variant];
-    var remFontSize = parseFloat(convert(style.fontSize, 'rem'));
-
-    if (remFontSize <= 1) {
-      return;
-    }
-
-    var maxFontSize = remFontSize;
-    var minFontSize = 1 + (maxFontSize - 1) / factor;
-    var lineHeight = style.lineHeight;
-
-    if (!(0, _cssUtils.isUnitless)(lineHeight) && !disableAlign) {
-      throw new Error(undefined !== "production" ? "Material-UI: Unsupported non-unitless line height with grid alignment.\nUse unitless line heights instead." : (0, _utils.formatMuiErrorMessage)(6));
-    }
-
-    if (!(0, _cssUtils.isUnitless)(lineHeight)) {
-      // make it unitless
-      lineHeight = parseFloat(convert(lineHeight, 'rem')) / parseFloat(remFontSize);
-    }
-
-    var transform = null;
-
-    if (!disableAlign) {
-      transform = function transform(value) {
-        return (0, _cssUtils.alignProperty)({
-          size: value,
-          grid: (0, _cssUtils.fontGrid)({
-            pixels: 4,
-            lineHeight: lineHeight,
-            htmlFontSize: typography.htmlFontSize
-          })
-        });
-      };
-    }
-
-    typography[variant] = (0, _extends2.default)({}, style, (0, _cssUtils.responsiveProperty)({
-      cssProperty: 'fontSize',
-      min: minFontSize,
-      max: maxFontSize,
-      unit: 'rem',
-      breakpoints: breakpointValues,
-      transform: transform
-    }));
-  });
-  return theme;
-}
-},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@material-ui/utils":"../node_modules/@material-ui/utils/esm/index.js","./cssUtils":"../node_modules/@material-ui/core/esm/styles/cssUtils.js"}],"../node_modules/@material-ui/core/esm/styles/useTheme.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = useTheme;
-
-var _styles = require("@material-ui/styles");
-
-var _react = _interopRequireDefault(require("react"));
-
-var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function useTheme() {
-  var theme = (0, _styles.useTheme)() || _defaultTheme.default;
-
-  if (undefined !== 'production') {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    _react.default.useDebugValue(theme);
-  }
-
-  return theme;
-}
-},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","react":"../node_modules/react/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/withTheme.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _styles = require("@material-ui/styles");
-
-var _defaultTheme = _interopRequireDefault(require("./defaultTheme"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var withTheme = (0, _styles.withThemeCreator)({
-  defaultTheme: _defaultTheme.default
-});
-var _default = withTheme;
-exports.default = _default;
-},{"@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js","./defaultTheme":"../node_modules/@material-ui/core/esm/styles/defaultTheme.js"}],"../node_modules/@material-ui/core/esm/styles/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var _exportNames = {
-  createMuiTheme: true,
-  unstable_createMuiStrictModeTheme: true,
-  createStyles: true,
-  makeStyles: true,
-  responsiveFontSizes: true,
-  styled: true,
-  useTheme: true,
-  withStyles: true,
-  withTheme: true,
-  createGenerateClassName: true,
-  jssPreset: true,
-  ServerStyleSheets: true,
-  StylesProvider: true,
-  MuiThemeProvider: true,
-  ThemeProvider: true
-};
-Object.defineProperty(exports, "createMuiTheme", {
-  enumerable: true,
-  get: function () {
-    return _createMuiTheme.default;
-  }
-});
-Object.defineProperty(exports, "unstable_createMuiStrictModeTheme", {
-  enumerable: true,
-  get: function () {
-    return _createMuiStrictModeTheme.default;
-  }
-});
-Object.defineProperty(exports, "createStyles", {
-  enumerable: true,
-  get: function () {
-    return _createStyles.default;
-  }
-});
-Object.defineProperty(exports, "makeStyles", {
-  enumerable: true,
-  get: function () {
-    return _makeStyles.default;
-  }
-});
-Object.defineProperty(exports, "responsiveFontSizes", {
-  enumerable: true,
-  get: function () {
-    return _responsiveFontSizes.default;
-  }
-});
-Object.defineProperty(exports, "styled", {
-  enumerable: true,
-  get: function () {
-    return _styled.default;
-  }
-});
-Object.defineProperty(exports, "useTheme", {
-  enumerable: true,
-  get: function () {
-    return _useTheme.default;
-  }
-});
-Object.defineProperty(exports, "withStyles", {
-  enumerable: true,
-  get: function () {
-    return _withStyles.default;
-  }
-});
-Object.defineProperty(exports, "withTheme", {
-  enumerable: true,
-  get: function () {
-    return _withTheme.default;
-  }
-});
-Object.defineProperty(exports, "createGenerateClassName", {
-  enumerable: true,
-  get: function () {
-    return _styles.createGenerateClassName;
-  }
-});
-Object.defineProperty(exports, "jssPreset", {
-  enumerable: true,
-  get: function () {
-    return _styles.jssPreset;
-  }
-});
-Object.defineProperty(exports, "ServerStyleSheets", {
-  enumerable: true,
-  get: function () {
-    return _styles.ServerStyleSheets;
-  }
-});
-Object.defineProperty(exports, "StylesProvider", {
-  enumerable: true,
-  get: function () {
-    return _styles.StylesProvider;
-  }
-});
-Object.defineProperty(exports, "MuiThemeProvider", {
-  enumerable: true,
-  get: function () {
-    return _styles.ThemeProvider;
-  }
-});
-Object.defineProperty(exports, "ThemeProvider", {
-  enumerable: true,
-  get: function () {
-    return _styles.ThemeProvider;
-  }
-});
-
-var _colorManipulator = require("./colorManipulator");
-
-Object.keys(_colorManipulator).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  if (key in exports && exports[key] === _colorManipulator[key]) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _colorManipulator[key];
-    }
-  });
-});
-
-var _createMuiTheme = _interopRequireDefault(require("./createMuiTheme"));
-
-var _createMuiStrictModeTheme = _interopRequireDefault(require("./createMuiStrictModeTheme"));
-
-var _createStyles = _interopRequireDefault(require("./createStyles"));
-
-var _makeStyles = _interopRequireDefault(require("./makeStyles"));
-
-var _responsiveFontSizes = _interopRequireDefault(require("./responsiveFontSizes"));
-
-var _styled = _interopRequireDefault(require("./styled"));
-
-var _transitions = require("./transitions");
-
-Object.keys(_transitions).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  if (key in exports && exports[key] === _transitions[key]) return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function () {
-      return _transitions[key];
-    }
-  });
-});
-
-var _useTheme = _interopRequireDefault(require("./useTheme"));
-
-var _withStyles = _interopRequireDefault(require("./withStyles"));
-
-var _withTheme = _interopRequireDefault(require("./withTheme"));
-
-var _styles = require("@material-ui/styles");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./colorManipulator":"../node_modules/@material-ui/core/esm/styles/colorManipulator.js","./createMuiTheme":"../node_modules/@material-ui/core/esm/styles/createMuiTheme.js","./createMuiStrictModeTheme":"../node_modules/@material-ui/core/esm/styles/createMuiStrictModeTheme.js","./createStyles":"../node_modules/@material-ui/core/esm/styles/createStyles.js","./makeStyles":"../node_modules/@material-ui/core/esm/styles/makeStyles.js","./responsiveFontSizes":"../node_modules/@material-ui/core/esm/styles/responsiveFontSizes.js","./styled":"../node_modules/@material-ui/core/esm/styles/styled.js","./transitions":"../node_modules/@material-ui/core/esm/styles/transitions.js","./useTheme":"../node_modules/@material-ui/core/esm/styles/useTheme.js","./withStyles":"../node_modules/@material-ui/core/esm/styles/withStyles.js","./withTheme":"../node_modules/@material-ui/core/esm/styles/withTheme.js","@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js"}],"App.tsx":[function(require,module,exports) {
+},{"./CircularProgress":"../node_modules/@material-ui/core/esm/CircularProgress/CircularProgress.js"}],"App.tsx":[function(require,module,exports) {
 "use strict";
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
@@ -55219,22 +55274,16 @@ var App = function App() {
   var cars = react_redux_1.useSelector(catalogSlice_1.selectCars);
   var isLoading = react_redux_1.useSelector(catalogSlice_1.selectIsLoading);
   var noResults = react_redux_1.useSelector(catalogSlice_1.selectNoResults);
+  var distanceFilter = react_redux_1.useSelector(catalogSlice_1.selectDistancefilter);
+  var durationFilter = react_redux_1.useSelector(catalogSlice_1.selectDurationFilter);
 
-  var _a = react_1.useState(""),
-      durationFilter = _a[0],
-      setDurationFilter = _a[1];
+  var _a = react_1.useState(false),
+      durationFilterError = _a[0],
+      setDurationFilterError = _a[1];
 
-  var _b = react_1.useState(""),
-      distanceFilter = _b[0],
-      setDistanceFilter = _b[1];
-
-  var _c = react_1.useState(false),
-      durationFilterError = _c[0],
-      setDurationFilterError = _c[1];
-
-  var _d = react_1.useState(false),
-      distanceFilterError = _d[0],
-      setDistanceFilterError = _d[1];
+  var _b = react_1.useState(false),
+      distanceFilterError = _b[0],
+      setDistanceFilterError = _b[1];
 
   var containerRef = react_1.createRef();
   react_1.useEffect(function () {
@@ -55251,11 +55300,11 @@ var App = function App() {
   };
 
   var handleDurationFilterChange = function handleDurationFilterChange(event) {
-    setDurationFilter(event.target.value);
+    dispatch(catalogSlice_1.setDurationFilter(event.target.value));
   };
 
   var handleDistanceFilterChange = function handleDistanceFilterChange(event) {
-    setDistanceFilter(event.target.value);
+    dispatch(catalogSlice_1.setDistanceFilter(event.target.value));
   };
 
   var handleApplyFilters = function handleApplyFilters() {
@@ -55266,22 +55315,22 @@ var App = function App() {
     var duration = Number(durationFilter);
     var inputsValid = true;
 
-    if (distance < 50 || distance > 3000) {
+    if (distance !== 0 && (distance < 50 || distance > 3000)) {
       setDistanceFilterError(true);
       inputsValid = false;
     }
 
-    if (duration < 1 || duration > 30) {
+    if (duration !== 0 && (duration < 1 || duration > 30)) {
       setDurationFilterError(true);
       inputsValid = false;
     }
 
-    if (inputsValid) dispatch(catalogSlice_1.fetchCars(distance, duration));
+    if (inputsValid) dispatch(catalogSlice_1.fetchCars());
   };
 
   var handleClearFilters = function handleClearFilters() {
-    setDurationFilter("");
-    setDistanceFilter("");
+    dispatch(catalogSlice_1.setDurationFilter(""));
+    dispatch(catalogSlice_1.setDistanceFilter(""));
     setDurationFilterError(false);
     setDistanceFilterError(false);
     dispatch(catalogSlice_1.fetchCars());
@@ -55369,16 +55418,19 @@ var App = function App() {
   }, isLoading && react_1.default.createElement(Box_1.default, {
     display: "flex",
     justifyContent: "center"
-  }, react_1.default.createElement(CircularProgress_1.default, null)), cars && cars.length > 0 && react_1.default.createElement(Box_1.default, {
+  }, react_1.default.createElement(CircularProgress_1.default, null)), cars && cars.length > 0 && react_1.default.createElement(react_1.default.Fragment, null, react_1.default.createElement(Box_1.default, {
+    m: 1,
+    fontFamily: "fontFamily"
+  }, cars.length, " results"), react_1.default.createElement(Box_1.default, {
     display: "flex",
     flexWrap: "wrap",
-    p: 1
+    m: 1
   }, cars.map(function (car, index) {
     return react_1.default.createElement(CarCard_1.default, {
       key: index,
       car: car
     });
-  })), noResults && react_1.default.createElement(Box_1.default, {
+  }))), noResults && react_1.default.createElement(Box_1.default, {
     display: "flex",
     justifyContent: "center"
   }, react_1.default.createElement(Box_1.default, null, "Sorry no results, try different filters")))), react_1.default.createElement(Fab_1.default, {
@@ -55482,7 +55534,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51737" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52172" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

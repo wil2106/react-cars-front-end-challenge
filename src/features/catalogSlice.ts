@@ -7,12 +7,16 @@ interface CarsState {
   cars: Car[],
   isLoading: boolean,
   noResults: boolean,
+  durationFilter: string,
+  distanceFilter: string
 }
 
 const initialState: CarsState = {
   cars: [],
   isLoading: false,
   noResults: false,
+  durationFilter: '',
+  distanceFilter: ''
 };
 
 export const catalogSlice = createSlice({
@@ -28,10 +32,16 @@ export const catalogSlice = createSlice({
     setNoResults: (state, action: PayloadAction<boolean>) => {
       state.noResults = action.payload;
     },
+    setDistanceFilter: (state, action: PayloadAction<string>) => {
+      state.distanceFilter = action.payload;
+    },
+    setDurationFilter: (state, action: PayloadAction<string>) => {
+      state.durationFilter = action.payload;
+    },
   },
 });
 
-export const { setCars, setIsLoading, setNoResults } = catalogSlice.actions;
+export const { setCars, setIsLoading, setNoResults, setDistanceFilter, setDurationFilter } = catalogSlice.actions;
 
 //thunks
 
@@ -43,8 +53,11 @@ export const { setCars, setIsLoading, setNoResults } = catalogSlice.actions;
 * @param duration - Second query parameter
 * @returns An array of cars
 */
-export const fetchCars = (distance?: number, duration?: number): AppThunk => async dispatch => {
+export const fetchCars = (): AppThunk => async (dispatch, getState) => {
   try {
+
+    let distance : number = Number(getState().catalog.distanceFilter)
+    let duration : number = Number(getState().catalog.durationFilter)
     
     //clear cars
     dispatch(setCars([]))
@@ -74,5 +87,7 @@ export const fetchCars = (distance?: number, duration?: number): AppThunk => asy
 export const selectCars = (state: RootState) => state.catalog.cars;
 export const selectIsLoading = (state: RootState) => state.catalog.isLoading;
 export const selectNoResults = (state: RootState) => state.catalog.noResults;
+export const selectDistancefilter = (state: RootState) => state.catalog.distanceFilter;
+export const selectDurationFilter = (state: RootState) => state.catalog.durationFilter;
 
 export default catalogSlice.reducer;

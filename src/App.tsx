@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
 
@@ -19,6 +19,10 @@ import {
   fetchCars,
   selectIsLoading,
   selectNoResults,
+  setDistanceFilter, 
+  setDurationFilter,
+  selectDistancefilter,
+  selectDurationFilter
 } from "./features/catalogSlice";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -38,9 +42,9 @@ const App = () => {
   const cars = useSelector(selectCars);
   const isLoading = useSelector(selectIsLoading);
   const noResults = useSelector(selectNoResults);
-
-  const [durationFilter, setDurationFilter] = useState("");
-  const [distanceFilter, setDistanceFilter] = useState("");
+  const distanceFilter = useSelector(selectDistancefilter);
+  const durationFilter = useSelector(selectDurationFilter);
+ 
   const [durationFilterError, setDurationFilterError] = useState(false);
   const [distanceFilterError, setDistanceFilterError] = useState(false);
 
@@ -60,13 +64,13 @@ const App = () => {
   const handleDurationFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDurationFilter(event.target.value);
+    dispatch(setDurationFilter(event.target.value));
   };
 
   const handleDistanceFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDistanceFilter(event.target.value);
+    dispatch(setDistanceFilter(event.target.value));
   };
 
   const handleApplyFilters = () => {
@@ -77,22 +81,22 @@ const App = () => {
     let duration: number = Number(durationFilter);
     let inputsValid: boolean = true;
 
-    if (distance < 50 || distance > 3000) {
+    if (distance !== 0 && (distance < 50 || distance > 3000)) {
       setDistanceFilterError(true);
       inputsValid = false;
     }
 
-    if (duration < 1 || duration > 30) {
+    if (duration !==0 && (duration < 1 || duration > 30)) {
       setDurationFilterError(true);
       inputsValid = false;
     }
 
-    if (inputsValid) dispatch(fetchCars(distance, duration));
+    if (inputsValid) dispatch(fetchCars());
   };
 
   const handleClearFilters = () => {
-    setDurationFilter("");
-    setDistanceFilter("");
+    dispatch(setDurationFilter(""));
+    dispatch(setDistanceFilter(""));
     setDurationFilterError(false);
     setDistanceFilterError(false);
     dispatch(fetchCars());
@@ -180,11 +184,14 @@ const App = () => {
             </Box>
           )}
           {cars && cars.length > 0 && (
-            <Box display="flex" flexWrap="wrap" p={1}>
-              {cars.map((car, index) => (
-                <CarCard key={index} car={car} />
-              ))}
-            </Box>
+            <React.Fragment>
+              <Box m={1} fontFamily="fontFamily">{cars.length} results</Box>
+              <Box display="flex" flexWrap="wrap" m={1}>
+                {cars.map((car, index) => (
+                  <CarCard key={index} car={car} />
+                ))}
+              </Box>
+            </React.Fragment>
           )}
           {noResults && (
             <Box display="flex" justifyContent="center">
