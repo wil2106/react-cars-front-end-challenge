@@ -46,10 +46,13 @@ export const { setCars, setIsLoading, setNoResults } = catalogSlice.actions;
 export const fetchCars = (distance?: number, duration?: number): AppThunk => async dispatch => {
   try {
     
+    //clear cars
+    dispatch(setCars([]))
     dispatch(setIsLoading(true))
     dispatch(setNoResults(false))
+    
 
-    const resp = await axios.get('/cars.json');
+    const resp = await axios.get('/cars.json', { params: { distance: distance, duration: duration } });
     const cars : Car[] = resp.data
 
     //simulate latency

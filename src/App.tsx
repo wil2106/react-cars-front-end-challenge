@@ -11,6 +11,8 @@ import Fab from "@material-ui/core/Fab";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
+import Card from "@material-ui/core/Card";
 
 import {
   selectCars,
@@ -37,7 +39,12 @@ const App = () => {
   const isLoading = useSelector(selectIsLoading);
   const noResults = useSelector(selectNoResults);
 
-  const containerRef = React.createRef();
+  const [durationFilter, setDurationFilter] = useState("");
+  const [distanceFilter, setDistanceFilter] = useState("");
+  const [durationFilterError, setDurationFilterError] = useState(false);
+  const [distanceFilterError, setDistanceFilterError] = useState(false);
+
+  const containerRef = createRef();
 
   useEffect(() => {
     dispatch(fetchCars());
@@ -50,13 +57,121 @@ const App = () => {
     });
   };
 
+  const handleDurationFilterChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDurationFilter(event.target.value);
+  };
+
+  const handleDistanceFilterChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDistanceFilter(event.target.value);
+  };
+
+  const handleApplyFilters = () => {
+    setDurationFilterError(false);
+    setDistanceFilterError(false);
+    //check input
+    let distance: number = Number(distanceFilter);
+    let duration: number = Number(durationFilter);
+    let inputsValid: boolean = true;
+
+    if (distance < 50 || distance > 3000) {
+      setDistanceFilterError(true);
+      inputsValid = false;
+    }
+
+    if (duration < 1 || duration > 30) {
+      setDurationFilterError(true);
+      inputsValid = false;
+    }
+
+    if (inputsValid) dispatch(fetchCars(distance, duration));
+  };
+
+  const handleClearFilters = () => {
+    setDurationFilter("");
+    setDistanceFilter("");
+    setDurationFilterError(false);
+    setDistanceFilterError(false);
+    dispatch(fetchCars());
+  };
+
   return (
     <Container ref={containerRef}>
-      <Box fontWeight="fontWeightBold" fontSize={32} borderBottom={1} mb={4} fontFamily="fontFamily">
+      <Box fontWeight="fontWeightBold" fontSize={32} fontFamily="fontFamily">
         Rent a car
+      </Box>
+      <Box mb={3}>
+        <Divider />
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={2}>
+          <Card>
+            <Box p={1}>
+              <Box mb={1} fontFamily="fontFamily">
+                Filter by
+              </Box>
+              <Box my={2}>
+                <Input
+                  type="number"
+                  error={durationFilterError}
+                  id="duration-filter-input"
+                  value={durationFilter}
+                  onChange={handleDurationFilterChange}
+                  inputProps={{ min: "1", max: "30", step: "1" }}
+                  endAdornment={
+                    <InputAdornment position="end">days</InputAdornment>
+                  }
+                  fullWidth
+                />
+                {durationFilterError && (
+                  <Box color="red" fontFamily="fontFamily">
+                    Must be between 1 and 30
+                  </Box>
+                )}
+              </Box>
+              <Box my={2}>
+                <Input
+                  type="number"
+                  error={distanceFilterError}
+                  id="distance-filter-input"
+                  value={distanceFilter}
+                  onChange={handleDistanceFilterChange}
+                  inputProps={{ min: "50", max: "3000", step: "50" }}
+                  endAdornment={
+                    <InputAdornment position="end">km</InputAdornment>
+                  }
+                  fullWidth
+                />
+                {distanceFilterError && (
+                  <Box color="red" fontFamily="fontFamily">
+                    Must be between 50 and 3000
+                  </Box>
+                )}
+              </Box>
+              <Button
+                variant="contained"
+                color="primary"
+                disableElevation
+                style={{ textTransform: "none" }}
+                fullWidth
+                onClick={handleApplyFilters}
+              >
+                Apply filters
+              </Button>
+              <Button
+                color="primary"
+                disableElevation
+                style={{ textTransform: "none" }}
+                fullWidth
+                onClick={handleClearFilters}
+              >
+                Clear filters
+              </Button>
+            </Box>
+          </Card>
         </Grid>
         <Grid item xs={10}>
           {isLoading && (
@@ -65,7 +180,7 @@ const App = () => {
             </Box>
           )}
           {cars && cars.length > 0 && (
-            <Box display="flex" flexWrap="wrap" borderLeft={1} p={1}>
+            <Box display="flex" flexWrap="wrap" p={1}>
               {cars.map((car, index) => (
                 <CarCard key={index} car={car} />
               ))}
