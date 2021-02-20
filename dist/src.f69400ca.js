@@ -51991,40 +51991,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 },{"./colorManipulator":"../node_modules/@material-ui/core/esm/styles/colorManipulator.js","./createMuiTheme":"../node_modules/@material-ui/core/esm/styles/createMuiTheme.js","./createMuiStrictModeTheme":"../node_modules/@material-ui/core/esm/styles/createMuiStrictModeTheme.js","./createStyles":"../node_modules/@material-ui/core/esm/styles/createStyles.js","./makeStyles":"../node_modules/@material-ui/core/esm/styles/makeStyles.js","./responsiveFontSizes":"../node_modules/@material-ui/core/esm/styles/responsiveFontSizes.js","./styled":"../node_modules/@material-ui/core/esm/styles/styled.js","./transitions":"../node_modules/@material-ui/core/esm/styles/transitions.js","./useTheme":"../node_modules/@material-ui/core/esm/styles/useTheme.js","./withStyles":"../node_modules/@material-ui/core/esm/styles/withStyles.js","./withTheme":"../node_modules/@material-ui/core/esm/styles/withTheme.js","@material-ui/styles":"../node_modules/@material-ui/styles/esm/index.js"}],"components/CarCard.tsx":[function(require,module,exports) {
 "use strict";
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function get() {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
     "default": mod
@@ -52035,7 +52001,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+var react_1 = __importDefault(require("react"));
 
 var Card_1 = __importDefault(require("@material-ui/core/Card"));
 
@@ -52073,42 +52039,58 @@ var CarCard = function CarCard(_a) {
   var car = _a.car;
   var classes = useStyles();
   var distanceFilter = react_redux_1.useSelector(catalogSlice_1.selectDistancefilter);
-  var durationFilter = react_redux_1.useSelector(catalogSlice_1.selectDurationFilter);
-  return React.createElement(Box_1.default, {
+  var durationFilter = react_redux_1.useSelector(catalogSlice_1.selectDurationFilter); //only recalculate if durationFilter or distanceFilter changed
+
+  var price = react_1.default.useMemo(function () {
+    var decreasePercentage = 1;
+    var distance = Number(distanceFilter);
+    var duration = Number(durationFilter);
+
+    if (duration > 10) {
+      decreasePercentage = 0.5;
+    } else if (duration > 4) {
+      decreasePercentage = 0.7;
+    } else if (duration > 1) {
+      decreasePercentage = 0.9;
+    }
+
+    return (car.pricePerDay * duration + car.pricePerKm * distance) * decreasePercentage;
+  }, [durationFilter, distanceFilter]);
+  return react_1.default.createElement(Box_1.default, {
     m: 1,
     width: "300px"
-  }, React.createElement(Card_1.default, null, React.createElement(CardActionArea_1.default, null, React.createElement(Box_1.default, {
+  }, react_1.default.createElement(Card_1.default, null, react_1.default.createElement(CardActionArea_1.default, null, react_1.default.createElement(Box_1.default, {
     display: "flex",
     width: "100%",
     justifyContent: "center"
-  }, React.createElement("img", {
+  }, react_1.default.createElement("img", {
     src: car.picturePath,
     alt: "test",
     style: {
       maxWidth: 300
     }
-  })), car.pricePerDay && car.pricePerKm && (durationFilter || distanceFilter) && React.createElement(Fab_1.default, {
+  })), car.pricePerDay && car.pricePerKm && (durationFilter || distanceFilter) && react_1.default.createElement(Fab_1.default, {
     className: classes.fab,
     color: "secondary"
-  }, React.createElement(Box_1.default, {
+  }, react_1.default.createElement(Box_1.default, {
     color: "white",
     display: "flex"
-  }, car.pricePerDay * Number(durationFilter) + car.pricePerKm * Number(distanceFilter), " \u20AC")), React.createElement(CardContent_1.default, null, React.createElement(Box_1.default, {
+  }, price, " \u20AC")), react_1.default.createElement(CardContent_1.default, null, react_1.default.createElement(Box_1.default, {
     display: "flex",
     width: "100%",
     justifyContent: "center",
     fontSize: 16,
     mb: 0.5
-  }, car.brand, " ", car.model), React.createElement(Divider_1.default, null), React.createElement(Box_1.default, {
+  }, car.brand, " ", car.model), react_1.default.createElement(Divider_1.default, null), react_1.default.createElement(Box_1.default, {
     mt: 1,
     display: "flex",
     width: "100%",
     justifyContent: "center"
-  }, React.createElement(Typography_1.default, {
+  }, react_1.default.createElement(Typography_1.default, {
     variant: "body2",
     color: "textSecondary",
     component: "p"
-  }, "MAx duration: ", (_b = car.availability) === null || _b === void 0 ? void 0 : _b.maxDuration, " \u2022 Max distance: ", (_c = car.availability) === null || _c === void 0 ? void 0 : _c.maxDistance))))));
+  }, "Max duration: ", (_b = car.availability) === null || _b === void 0 ? void 0 : _b.maxDuration, " \u2022 Max distance:", " ", (_c = car.availability) === null || _c === void 0 ? void 0 : _c.maxDistance))))));
 };
 
 exports.default = CarCard;
@@ -55534,7 +55516,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52172" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53704" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
